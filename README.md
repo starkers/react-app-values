@@ -33,3 +33,10 @@ The script will:
 # TLDR
 - when adding new `REACT_APP_X` variables to you files, ensure to build the assets with a default value of `DEFAULT_VALUE_X`
 - why not a simple bash+sed script?  a static binary is better to distribute and safer than shell scripting + distributing shell environments into a container
+
+
+# TODO
+
+- needs tests
+- ugly exported functions
+- gooder docs
