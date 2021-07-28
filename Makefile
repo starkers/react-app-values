@@ -1,4 +1,4 @@
-
+VERSION := 0.0.1
 BINARY := rav
 
 # -s and -w strip debug headers

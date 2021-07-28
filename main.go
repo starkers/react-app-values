@@ -46,7 +46,7 @@ func main() {
 		}
 	}
 
-	for _, changed := range changeList{
+	for _, changed := range changeList {
 		fmt.Printf("changed file: %s\n", changed)
 	}
 
