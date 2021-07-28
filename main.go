@@ -2,14 +2,13 @@ package main
 
 import (
 	"fmt"
+	"github.com/jinzhu/copier"
+	flag "github.com/spf13/pflag"
 	"io/ioutil"
 	"os"
 	"os/user"
 	"path/filepath"
 	"strings"
-
-	"github.com/jinzhu/copier"
-	flag "github.com/spf13/pflag"
 )
 
 var dir string
@@ -17,10 +16,6 @@ var dir string
 type Env struct {
 	Key   string
 	Value string
-}
-
-type EnvList struct {
-	Data []Env
 }
 
 func init() {
@@ -140,34 +135,46 @@ func readFile(filePath string) ([]byte, string) {
 }
 
 func changeFile(fileName string, envVars []Env) (result bool) {
+	effected := false
+	for _, envVar := range envVars {
+		change := changeStringInFile(fileName, envVar)
+		if change {
+			effected = true
+		}
+	}
+	return effected
+}
+
+func changeStringInFile(fileName string, envVar Env) bool {
 	r, stringContents := readFile(fileName)
 
 	var originalContents string
+	changed := false
 
 	err := copier.Copy(&originalContents, &stringContents) // makes a copy of the original string contents
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	changed := false
+	key := envVar.Key
 
-	for _, envVar := range envVars {
-		key := envVar.Key
-		// calculate the trailing part of the key name.. EG REACT_APP_FOO > FOO
-		suffix := strings.ReplaceAll(key, "REACT_APP_", "")
-		// now we know the string we want to search for and replace..
-		oldString := fmt.Sprintf("DEFAULT_VALUE_%s", suffix)
-		newString := envVar.Value
+	// calculate the trailing part of the key name.. EG REACT_APP_FOO > FOO
+	suffix := strings.ReplaceAll(key, "REACT_APP_", "")
 
-		stringContents = strings.ReplaceAll(string(r), oldString, newString)
-		if originalContents != stringContents {
-			changed = true
-		}
+	// now we know the string we want to search for and replace..
+	oldString := fmt.Sprintf("DEFAULT_VALUE_%s", suffix)
+
+	newString := envVar.Value
+
+	stringContents = strings.ReplaceAll(string(r), oldString, newString)
+	if originalContents != stringContents {
+		changed = true
 	}
 	if changed {
 		err = ioutil.WriteFile(fileName, []byte(stringContents), 0)
 		if err != nil {
 			fmt.Println(err)
+			os.Exit(10)
 		}
 	}
 	return changed

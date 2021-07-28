@@ -1,5 +1,6 @@
 sample data
 ...
 REACT_APP_FOO=DEFAULT_VALUE_FOO
+REACT_APP_WAZ=DEFAULT_VALUE_WAZ
 ...
 end sample data
