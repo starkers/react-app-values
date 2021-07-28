@@ -12,6 +12,7 @@ build:
 
 test:
 	REACT_APP_FOO=bar go run . --dir ./test-data
-	grep bar ./test-data/changed.txt
-	echo ""^^ should be 'REACT_APP_FOO=bar'"
+	@echo
+	@grep ^REACT_APP_FOO= ./test-data/changed.txt
+	@echo "^ should be  =bar"
 

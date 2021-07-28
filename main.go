@@ -36,11 +36,11 @@ func main() {
 		os.Exit(0)
 	}
 
-	files := FindFiles(dir)
+	files := findFiles(dir)
 
 	var changeList []string
 	for _, file := range files {
-		updatedFile := DoChange(file, vars)
+		updatedFile := changeFile(file, vars)
 		if updatedFile {
 			changeList = append(changeList, file)
 		}
@@ -68,30 +68,32 @@ func parseEnvs() []Env {
 			result = append(result, obj)
 		}
 	}
+	count := len(result)
+	fmt.Printf("doing work for env vars (%d):\n", count)
 	for _, x := range result {
-		fmt.Println(x.Key)
+		fmt.Printf("- %s\n", x.Key)
 	}
 	return result
 }
 
-func FindFiles(searchPath string) []string {
+func findFiles(searchPath string) []string {
 	var result []string
 
 	var searchFunc = func(pathX string, infoX os.FileInfo, errX error) error {
 		if errX != nil {
-			//log.Warnw("FindFiles error",
+			//log.Warnw("findFiles error",
 			//	"path", pathX,
 			//	"err", errX,
 			//)
 			return errX
 		}
-		if IsFile(pathX) {
+		if isFile(pathX) {
 			result = append(result, pathX)
 		}
 		return nil
 	}
 
-	realPath := GetFileAbsPath(searchPath)
+	realPath := getFileAbsolutePath(searchPath)
 	err := filepath.Walk(realPath, searchFunc)
 	if err != nil {
 		fmt.Println(err)
@@ -100,7 +102,7 @@ func FindFiles(searchPath string) []string {
 	return result
 }
 
-func GetFileAbsPath(fileName string) (result string) {
+func getFileAbsolutePath(fileName string) (result string) {
 
 	if strings.HasPrefix(fileName, "~/") {
 		usr, _ := user.Current()
@@ -117,7 +119,7 @@ func GetFileAbsPath(fileName string) (result string) {
 	return result
 }
 
-func IsFile(path string) bool {
+func isFile(path string) bool {
 	fileInfo, err := os.Stat(path)
 	if err != nil {
 		fmt.Println(err)
@@ -127,7 +129,7 @@ func IsFile(path string) bool {
 	return fileInfo.Mode().IsRegular()
 }
 
-func ReadFile(filePath string) ([]byte, string) {
+func readFile(filePath string) ([]byte, string) {
 	r, err := ioutil.ReadFile(filePath)
 	stringContents := string(r)
 	if err != nil {
@@ -137,8 +139,8 @@ func ReadFile(filePath string) ([]byte, string) {
 	return r, stringContents
 }
 
-func DoChange(fileName string, envVars []Env) (result bool) {
-	r, stringContents := ReadFile(fileName)
+func changeFile(fileName string, envVars []Env) (result bool) {
+	r, stringContents := readFile(fileName)
 
 	var originalContents string
 
