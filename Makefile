@@ -3,12 +3,10 @@ BINARY := rav
 
 # -s and -w strip debug headers
 build:
-	GCO_ENABLED=0 GOOS=linux go build \
-	-v \
+	GCO_ENABLED=0 GOOS=linux GOARCH=arm64 go build \
 	-a \
-	-installsuffix cgo \
-	-ldflags="-X main.version=${VERSION} -s -w" \
-	-o ${BINARY}-linux .
+	-ldflags="-extldflags=-static -X main.version=${VERSION}" \
+	-o ${BINARY}-linux-arm64 .
 
 test:
 	REACT_APP_FOO=bar go run . --dir ./test-data
