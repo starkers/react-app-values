@@ -1,0 +1,4 @@
+github.com/jinzhu/copier v0.3.2 h1:QdBOCbaouLDYaIPFfi1bKv5F5tPpeTwXe4sD0jqtz5w=
+github.com/jinzhu/copier v0.3.2/go.mod h1:24xnZezI2Yqac9J61UC6/dG/k76ttpq0DdJI3QmUvro=
+github.com/spf13/pflag v1.0.5 h1:iy+VFUOCP1a+8yFto/drg2CJ5u0yRoB7fZw3DKv/JXA=
+github.com/spf13/pflag v1.0.5/go.mod h1:McXfInJRrz4CZXVZOBLb0bTZqETkiAhM9Iw0y3An2Bg=
